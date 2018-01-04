@@ -14,9 +14,13 @@
 //See README and LICENSE for more details
 
 #include <gtk/gtk.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
 
 GtkWidget *aboutWindow;
 GtkTextBuffer *transcript;
+GtkEntry *question;
 
 void windowDestroyed(){
 	gtk_main_quit();
@@ -25,7 +29,12 @@ void windowDestroyed(){
 void ask() {
 	GtkTextIter end;
 	gtk_text_buffer_get_end_iter(transcript, &end);
-	gtk_text_buffer_insert(transcript, &end, "test\n", -1);
+	const char * userQ = gtk_entry_get_text(question);
+	char * answer = "um....";
+	char * toAppend = malloc(strlen(userQ) + strlen(answer) + 10);
+	sprintf(toAppend, "Q: %s\nA: %s\n", userQ, answer);
+	gtk_text_buffer_insert(transcript, &end, toAppend, -1);
+	free(toAppend);
 }
 
 void clear() {
@@ -47,12 +56,16 @@ int main(int argc, char * argv[]){
 
 	aboutWindow = GTK_WIDGET(gtk_builder_get_object(builder, "aboutWindow"));
 
-	GtkTextView* transcriptView = GTK_TEXT_VIEW(gtk_builder_get_object(builder, "transcript"));
+	GtkTextView *transcriptView = GTK_TEXT_VIEW(gtk_builder_get_object(builder, "transcript"));
 	transcript = gtk_text_view_get_buffer(transcriptView);
+
+	question = GTK_ENTRY(gtk_builder_get_object(builder, "questionField"));
 
 	g_object_unref(builder);
 
+	// initialize interface and other stuff
 	clear();
+	srand(time(NULL));
 
 	gtk_widget_show(window);
 	gtk_main();
