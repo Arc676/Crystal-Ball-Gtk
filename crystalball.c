@@ -1,5 +1,7 @@
 #include <gtk/gtk.h>
 
+GtkWidget *aboutWindow;
+
 int main(int argc, char * argv[]){
 	gtk_init(&argc, &argv);
 
@@ -8,6 +10,8 @@ int main(int argc, char * argv[]){
 
 	GtkWidget *window = GTK_WIDGET(gtk_builder_get_object(builder, "window1"));
 	gtk_builder_connect_signals(builder, NULL);
+
+	aboutWindow = GTK_WIDGET(gtk_builder_get_object(builder, "aboutWindow"));
 
 	g_object_unref(builder);
 
@@ -30,5 +34,5 @@ void clear() {
 }
 
 void about() {
-	printf("about crystal ball\n");
+	gtk_widget_show(aboutWindow);
 }
